@@ -16,11 +16,12 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(AbstractHttpConfigurer::disable) // REST API에서 보통 꺼둠
+                .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
                                 "/api/v1/user/register",
-                                "/api/v1/user/login"
+                                "/api/v1/user/login",
+                                "/api/v1/search"
                         ).permitAll()
                         .anyRequest().authenticated()
                 );
