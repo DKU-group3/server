@@ -55,4 +55,8 @@ public class UserService {
         // To-Do RefreshToken 블랙리스트로 레디스에 추가, 레디스에 저장되어 있던 AccesToken 폐기
     }
 
+    public User getById(long id) {
+        return userRepository.findById(id)
+                .orElseThrow(() -> new BaseException(ErrorType.NOTFOUND_USER));
+    }
 }
