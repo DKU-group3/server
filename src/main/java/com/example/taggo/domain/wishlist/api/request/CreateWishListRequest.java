@@ -8,6 +8,6 @@ public record CreateWishListRequest(
         Long kakaoId,
 
         @NotNull
-        String name
+        String placeName
 ) {
 }

@@ -1,11 +1,15 @@
 package com.example.taggo.domain.place.model;
 
 import com.example.taggo.domain.common.model.BaseEntity;
+import com.example.taggo.domain.placetag.model.PlaceTag;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static jakarta.persistence.GenerationType.*;
 
@@ -26,15 +30,14 @@ public class Place extends BaseEntity {
 
     private String name;
 
-//    private String address;
-//
-//    @Column(unique = true)
-//    private String phone;
+    @OneToMany(mappedBy = "place", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<PlaceTag> tags = new ArrayList<>();
 
     public static Place create(Long kakaoId, String name){
         return Place.builder()
                 .kakaoId(kakaoId)
                 .name(name)
+                .tags(new ArrayList<>())
                 .build();
     }
 }

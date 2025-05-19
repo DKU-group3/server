@@ -7,9 +7,11 @@ public record RegisterRequest(
         //To-do 이메일, 패스워드 패턴 형식 지정
         String email,
 
-        @NotNull String password,
+        @NotNull
+        String password,
 
-        @NotNull String name
+        @NotNull
+        String name
 
 ) {
 }
