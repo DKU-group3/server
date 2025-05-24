@@ -11,3 +11,8 @@ spring:
     properties:
       hibernate:
         format_sql: update
+
+jwt:
+  secret: ${JWT_SECRET:your-very-secret-key}
+  access-token-expiration: 3600000 # 1시간
+  refresh-token-expiration: 1209600000 # 2주

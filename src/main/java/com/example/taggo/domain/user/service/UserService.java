@@ -1,22 +1,27 @@
 package com.example.taggo.domain.user.service;
 
-import com.example.taggo.domain.common.exception.BaseException;
-import com.example.taggo.domain.common.exception.ErrorType;
-import com.example.taggo.domain.user.api.request.LoginRequest;
-import com.example.taggo.domain.user.api.request.LogoutRequest;
-import com.example.taggo.domain.user.api.request.RegisterRequest;
-import com.example.taggo.domain.user.model.User;
-import com.example.taggo.domain.user.repository.UserRepository;
-import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import com.example.taggo.domain.common.exception.BaseException;
+import com.example.taggo.domain.common.exception.ErrorType;
+import com.example.taggo.domain.user.UserJwtTokenProvider;
+import com.example.taggo.domain.user.api.request.LoginRequest;
+import com.example.taggo.domain.user.api.request.LogoutRequest;
+import com.example.taggo.domain.user.api.request.RegisterRequest;
+import com.example.taggo.domain.user.api.response.LoginResponse;
+import com.example.taggo.domain.user.model.User;
+import com.example.taggo.domain.user.repository.UserRepository;
+
+import lombok.RequiredArgsConstructor;
 
 
 @Service
 @RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
+    private final UserJwtTokenProvider jwtTokenProvider;
     private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     @Transactional
@@ -37,7 +42,7 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
-    public void login(LoginRequest request){
+    public LoginResponse login(LoginRequest request){
         User user = userRepository.findByEmail(request.email())
                 .orElseThrow(() -> new BaseException(ErrorType.NOTFOUND_USER));
 
@@ -48,11 +53,16 @@ public class UserService {
             throw new BaseException(ErrorType.OUTMATCHED_PASSWORD);
         }
 
-        // To-DO JWT AccessToken, RefreshToken 발급 후 전송
+        // JWT AccessToken, RefreshToken 발급
+        String accessToken = jwtTokenProvider.createAccessToken(String.valueOf(user.getId()));
+        String refreshToken = jwtTokenProvider.createRefreshToken(String.valueOf(user.getId()));
+        // TODO: RefreshToken을 Redis 등 외부 저장소에 저장
+        return new LoginResponse(accessToken, refreshToken);
     }
 
     public void logout(LogoutRequest request){
-        // To-Do RefreshToken 블랙리스트로 레디스에 추가, 레디스에 저장되어 있던 AccesToken 폐기
+        // TODO: RefreshToken을 Redis 등에서 삭제(블랙리스트 처리)
+        // TODO: 필요시 AccessToken도 블랙리스트 처리
     }
 
     public User getById(long id) {
