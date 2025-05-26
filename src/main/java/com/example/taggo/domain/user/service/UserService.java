@@ -1,16 +1,23 @@
 package com.example.taggo.domain.user.service;
 
-import com.example.taggo.domain.common.exception.BaseException;
-import com.example.taggo.domain.common.exception.ErrorType;
-import com.example.taggo.domain.user.api.request.LoginRequest;
-import com.example.taggo.domain.user.api.request.LogoutRequest;
-import com.example.taggo.domain.user.api.request.RegisterRequest;
-import com.example.taggo.domain.user.model.User;
-import com.example.taggo.domain.user.repository.UserRepository;
-import lombok.RequiredArgsConstructor;
+import java.util.concurrent.TimeUnit;
+
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import com.example.taggo.domain.common.exception.BaseException;
+import com.example.taggo.domain.common.exception.ErrorType;
+import com.example.taggo.domain.common.util.JwtUtil;
+import com.example.taggo.domain.user.api.request.LoginRequest;
+import com.example.taggo.domain.user.api.request.LogoutRequest;
+import com.example.taggo.domain.user.api.request.RegisterRequest;
+import com.example.taggo.domain.user.api.response.TokenResponse;
+import com.example.taggo.domain.user.model.User;
+import com.example.taggo.domain.user.repository.UserRepository;
+
+import lombok.RequiredArgsConstructor;
 
 
 @Service
@@ -18,6 +25,10 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserService {
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+    private final JwtUtil jwtUtil;
+    private final StringRedisTemplate redisTemplate;
+    private final long refreshTokenValidity = 1000L * 60 * 60 * 24 * 7; // 7일
+    private final long accessTokenValidity = 1000L * 60 * 60; // 1시간
 
     @Transactional
     public void register(RegisterRequest request){
@@ -37,7 +48,7 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
-    public void login(LoginRequest request){
+    public TokenResponse login(LoginRequest request){
         User user = userRepository.findByEmail(request.email())
                 .orElseThrow(() -> new BaseException(ErrorType.NOTFOUND_USER));
 
@@ -48,11 +59,28 @@ public class UserService {
             throw new BaseException(ErrorType.OUTMATCHED_PASSWORD);
         }
 
-        // To-DO JWT AccessToken, RefreshToken 발급 후 전송
+        // AccessToken, RefreshToken 발급
+        String accessToken = jwtUtil.generateAccessToken(user.getEmail());
+        String refreshToken = jwtUtil.generateRefreshToken(user.getEmail());
+
+        // RefreshToken Redis에 저장 (key: user email, value: refreshToken)
+        redisTemplate.opsForValue().set("refresh:" + user.getEmail(), refreshToken, refreshTokenValidity, TimeUnit.MILLISECONDS);
+
+        return new TokenResponse(accessToken, refreshToken);
     }
 
     public void logout(LogoutRequest request){
-        // To-Do RefreshToken 블랙리스트로 레디스에 추가, 레디스에 저장되어 있던 AccesToken 폐기
+        // AccessToken, RefreshToken 블랙리스트 처리
+        String accessToken = request.getAccessToken();
+        String refreshToken = request.getRefreshToken();
+        if (accessToken != null) {
+            redisTemplate.opsForValue().set("blacklist:access:" + accessToken, "logout", accessTokenValidity, TimeUnit.MILLISECONDS);
+        }
+        if (refreshToken != null) {
+            String email = jwtUtil.getEmailFromToken(refreshToken);
+            redisTemplate.delete("refresh:" + email);
+            redisTemplate.opsForValue().set("blacklist:refresh:" + refreshToken, "logout", refreshTokenValidity, TimeUnit.MILLISECONDS);
+        }
     }
 
     public User getById(long id) {
