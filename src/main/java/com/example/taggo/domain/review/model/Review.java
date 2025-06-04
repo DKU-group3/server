@@ -1,10 +1,8 @@
 package com.example.taggo.domain.review.model;
 
-import com.example.taggo.domain.common.model.BaseEntity;
+import com.example.taggo.common.model.BaseEntity;
+import com.example.taggo.domain.image.model.Image;
 import com.example.taggo.domain.place.model.Place;
-import com.example.taggo.domain.reviewtag.model.ReviewTag;
-import com.example.taggo.domain.tag.model.Tag;
-import com.example.taggo.domain.user.model.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -20,9 +18,7 @@ import static lombok.AccessLevel.*;
 @Entity
 @Getter
 @Table(name = "review")
-@Builder
 @NoArgsConstructor(access = PROTECTED)
-@AllArgsConstructor(access = PROTECTED)
 public class Review extends BaseEntity {
 
     @Id @GeneratedValue(strategy = IDENTITY)
@@ -32,34 +28,11 @@ public class Review extends BaseEntity {
 
     private String content;
 
-    private String youtubeUrl;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false, updatable = false)
-    private User user;
+    @OneToMany(mappedBy = "review", orphanRemoval = true, cascade = CascadeType.ALL)
+    private List<Image> images = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "place_id", nullable = false, updatable = false)
     private Place place;
 
-    @OneToMany(mappedBy = "review", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ReviewTag> tags = new ArrayList<>();
-
-    public static Review create(User user, Place place, Double rating ,String content, String youtubeUrl, List<Tag> tags) {
-        Review review = Review.builder()
-                .user(user)
-                .place(place)
-                .rating(rating)
-                .content(content)
-                .youtubeUrl(youtubeUrl)
-                .tags(new ArrayList<>())
-                .build();
-
-        for (Tag tag : tags) {
-            ReviewTag reviewTag = ReviewTag.create(review, tag);
-            review.getTags().add(reviewTag);
-        }
-
-        return review;
-    }
 }
