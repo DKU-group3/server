@@ -1,4 +1,4 @@
-package com.example.taggo.domain.common.config;
+package com.example.taggo.common.config;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -22,7 +22,10 @@ public class SecurityConfig {
                                 "/api/v1/user/*",
                                 "/api/v1/search",
                                 "/api/v1/wishlist",
-                                "/api/v1/wishlist/*"
+                                "/api/v1/wishlist/*",
+                                "/api/v1/reviews",
+                                "api/v1/reviews/me",
+                                "api/v1/reviews/place/*"
                         ).permitAll()
                         .anyRequest().authenticated()
                 );

@@ -1,6 +1,6 @@
 package com.example.taggo.domain.wishlist.model;
 
-import com.example.taggo.domain.common.model.BaseEntity;
+import com.example.taggo.common.model.BaseEntity;
 import com.example.taggo.domain.place.model.Place;
 import com.example.taggo.domain.user.model.User;
 import jakarta.persistence.*;

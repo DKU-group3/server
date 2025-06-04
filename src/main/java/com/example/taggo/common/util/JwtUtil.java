@@ -1,4 +1,4 @@
-package com.example.taggo.domain.common.util;
+package com.example.taggo.common.util;
 
 import java.security.Key;
 import java.util.Date;

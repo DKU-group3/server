@@ -1,9 +1,9 @@
 package com.example.taggo.domain.user.api.request;
 
-import lombok.Data;
+import jakarta.validation.constraints.NotNull;
 
-@Data
-public class LogoutRequest {
-    private String accessToken;
-    private String refreshToken;
+public record LogoutRequest(
+        @NotNull String accessToken,
+        @NotNull String refreshToken
+) {
 }

@@ -1,4 +1,4 @@
-package com.example.taggo.domain.common.exception;
+package com.example.taggo.common.exception;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
