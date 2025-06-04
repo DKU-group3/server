@@ -1,7 +1,7 @@
 package com.example.taggo.domain.place.service;
 
-import com.example.taggo.domain.common.exception.BaseException;
-import com.example.taggo.domain.common.exception.ErrorType;
+import com.example.taggo.common.exception.BaseException;
+import com.example.taggo.common.exception.ErrorType;
 import com.example.taggo.domain.place.model.Place;
 import com.example.taggo.domain.place.repository.PlaceRepository;
 import lombok.RequiredArgsConstructor;

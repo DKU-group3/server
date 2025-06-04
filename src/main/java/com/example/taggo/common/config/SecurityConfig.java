@@ -1,4 +1,4 @@
-package com.example.taggo.domain.common.config;
+package com.example.taggo.common.config;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;

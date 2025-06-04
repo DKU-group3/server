@@ -1,6 +1,6 @@
 package com.example.taggo.domain.place.model;
 
-import com.example.taggo.domain.common.model.BaseEntity;
+import com.example.taggo.common.model.BaseEntity;
 import com.example.taggo.domain.placetag.model.PlaceTag;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

@@ -1,6 +1,6 @@
 package com.example.taggo.domain.user.model;
 
-import com.example.taggo.domain.common.model.BaseEntity;
+import com.example.taggo.common.model.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

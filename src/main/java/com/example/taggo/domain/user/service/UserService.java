@@ -7,9 +7,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.example.taggo.domain.common.exception.BaseException;
-import com.example.taggo.domain.common.exception.ErrorType;
-import com.example.taggo.domain.common.util.JwtUtil;
+import com.example.taggo.common.exception.BaseException;
+import com.example.taggo.common.exception.ErrorType;
+import com.example.taggo.common.util.JwtUtil;
 import com.example.taggo.domain.user.api.request.LoginRequest;
 import com.example.taggo.domain.user.api.request.LogoutRequest;
 import com.example.taggo.domain.user.api.request.RegisterRequest;
@@ -71,8 +71,8 @@ public class UserService {
 
     public void logout(LogoutRequest request){
         // AccessToken, RefreshToken 블랙리스트 처리
-        String accessToken = request.getAccessToken();
-        String refreshToken = request.getRefreshToken();
+        String accessToken = request.accessToken();
+        String refreshToken = request.refreshToken();
         if (accessToken != null) {
             redisTemplate.opsForValue().set("blacklist:access:" + accessToken, "logout", accessTokenValidity, TimeUnit.MILLISECONDS);
         }
