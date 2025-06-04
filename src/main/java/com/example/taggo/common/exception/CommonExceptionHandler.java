@@ -1,4 +1,4 @@
-package com.example.taggo.domain.common.exception;
+package com.example.taggo.common.exception;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;

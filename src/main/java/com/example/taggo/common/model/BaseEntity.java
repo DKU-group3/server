@@ -1,4 +1,4 @@
-package com.example.taggo.domain.common.model;
+package com.example.taggo.common.model;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.EntityListeners;
