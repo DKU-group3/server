@@ -7,6 +7,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -21,12 +22,13 @@ public class SecurityConfig {
                         .requestMatchers(
                                 "/api/v1/user/*",
                                 "/api/v1/search",
-                                "/api/v1/wishlist",
-                                "/api/v1/wishlist/*",
-                                "/api/v1/reviews",
-                                "api/v1/reviews/me",
-                                "api/v1/reviews/place/*"
+                                "/api/v1/places/search/reviews",
+                                "/api/v1/tags"
                         ).permitAll()
+                        .requestMatchers(
+                                "/api/v1/wishlist",
+                                "/api/v1/wishlist/*"
+                        ).authenticated()
                         .anyRequest().authenticated()
                 );
 

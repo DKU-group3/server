@@ -22,8 +22,8 @@ public class WishListService {
 
     public void addWishList(CreateWishListRequest request) {
         // To-do 입력받은 JWT 에서 유저 아이디 추출, 해당 유저 아이디로 유저 조회
-        User user = userService.getById(1L);
-        Place place = placeService.findOrCreate(request.kakaoId(), request.placeName());
+        User user = userService.me();
+        Place place = placeService.findOrCreate(request.placeName());
         wishListRepository.save(WishList.create(user, place));
     }
 
@@ -32,7 +32,8 @@ public class WishListService {
     }
 
     public GetWishListResponse getByUserId(){
-        List<WishList> result = wishListRepository.findByUserId(1L);
+        User user = userService.me();
+        List<WishList> result = wishListRepository.findByUserId(user.getId());
         return GetWishListResponse.from(result);
     }
 

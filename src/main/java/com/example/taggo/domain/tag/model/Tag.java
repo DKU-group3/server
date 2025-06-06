@@ -1,10 +1,7 @@
 package com.example.taggo.domain.tag.model;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import static jakarta.persistence.GenerationType.*;
 import static lombok.AccessLevel.*;
@@ -12,6 +9,7 @@ import static lombok.AccessLevel.*;
 @Entity
 @Getter
 @Table(name = "Tag")
+@Builder
 @NoArgsConstructor(access = PROTECTED)
 @AllArgsConstructor(access = PROTECTED)
 public class Tag {
@@ -20,6 +18,11 @@ public class Tag {
     private Long id;
 
     @Column(unique = true)
-    private String tagName;
+    private String name;
 
+    public static Tag create(String name) {
+        return Tag.builder()
+                .name(name)
+                .build();
+    }
 }

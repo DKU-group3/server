@@ -1,4 +1,4 @@
-package com.example.taggo.domain.kakao.api.response;
+package com.example.taggo.domain.search.api.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

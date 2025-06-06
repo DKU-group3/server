@@ -25,18 +25,18 @@ public class Place extends BaseEntity {
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
 
-    @Column(unique = true)
-    private Long kakaoId;
-
     private String name;
+
+    @Column(nullable = true, length = 1000)
+    private String imageUrl;
 
     @OneToMany(mappedBy = "place", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PlaceTag> tags = new ArrayList<>();
 
-    public static Place create(Long kakaoId, String name){
+    public static Place create(String name, String imageUrl) {
         return Place.builder()
-                .kakaoId(kakaoId)
                 .name(name)
+                .imageUrl(imageUrl)
                 .tags(new ArrayList<>())
                 .build();
     }

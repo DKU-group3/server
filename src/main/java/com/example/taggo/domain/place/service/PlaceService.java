@@ -7,19 +7,38 @@ import com.example.taggo.domain.place.repository.PlaceRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
+import static com.example.taggo.common.exception.ErrorType.*;
+
 @Service
 @RequiredArgsConstructor
 public class PlaceService {
 
     private final PlaceRepository placeRepository;
 
-    public Place findOrCreate(Long kakaoId, String name){
-        return placeRepository.findByKakaoId(kakaoId).orElseGet(() ->
-                placeRepository.save(Place.create(kakaoId, name)));
+    public Place findByName(String name) {
+        return placeRepository.findByName(name)
+                .orElseThrow(() -> new BaseException(NOTFOUND_PLACE));
     }
 
-    public Place findByKaKaoId(Long kakaoId) {
-        return placeRepository.findByKakaoId(kakaoId)
-                .orElseThrow(() -> new BaseException(ErrorType.NOTFOUND_PLACE));
+    public Optional<Place> findByNameOptional(String name) {
+        return placeRepository.findByName(name);
     }
+
+    public Place findOrCreate(String name){
+        return placeRepository.findByName(name).orElseGet(() ->
+                placeRepository.save(Place.create(name, null)));
+    }
+
+    public Place createOrGet(String name, String imageUrl) {
+        return placeRepository.findByName(name)
+                .orElseGet(() -> placeRepository.save(
+                        Place.create(
+                                name,
+                                imageUrl
+                        )
+                ));
+    }
+
 }
