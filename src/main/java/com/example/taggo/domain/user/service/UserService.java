@@ -3,6 +3,8 @@ package com.example.taggo.domain.user.service;
 import java.util.concurrent.TimeUnit;
 
 import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,6 +20,8 @@ import com.example.taggo.domain.user.model.User;
 import com.example.taggo.domain.user.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
+
+import static com.example.taggo.common.exception.ErrorType.NOTFOUND_USER;
 
 
 @Service
@@ -50,7 +54,7 @@ public class UserService {
     @Transactional(readOnly = true)
     public TokenResponse login(LoginRequest request){
         User user = userRepository.findByEmail(request.email())
-                .orElseThrow(() -> new BaseException(ErrorType.NOTFOUND_USER));
+                .orElseThrow(() -> new BaseException(NOTFOUND_USER));
 
         String password = request.password();
         String encodedPassword = user.getPassword();
@@ -85,6 +89,14 @@ public class UserService {
 
     public User getById(long id) {
         return userRepository.findById(id)
-                .orElseThrow(() -> new BaseException(ErrorType.NOTFOUND_USER));
+                .orElseThrow(() -> new BaseException(NOTFOUND_USER));
+    }
+
+    public User me() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName();
+
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new BaseException(NOTFOUND_USER));
     }
 }

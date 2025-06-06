@@ -9,14 +9,14 @@ import org.springframework.web.bind.annotation.*;
 import static org.springframework.http.HttpStatus.*;
 
 @RestController
-@RequestMapping("/api/v1/reviews")
+@RequestMapping("/api/v1")
 @RequiredArgsConstructor
 public class ReviewController {
     private final ReviewService reviewService;
 
-    @GetMapping("/place/{kakaoId}")
-    public ResponseEntity<ReviewListResponse> getByKakaoId(@PathVariable Long kakaoId){
-        ReviewListResponse response = reviewService.findByKakaoId(kakaoId);
+    @GetMapping("/places/search/reviews")
+    public ResponseEntity<ReviewListResponse> getByKakaoId(@RequestParam String name){
+        ReviewListResponse response = reviewService.findByName(name);
         return ResponseEntity.ok(response);
     }
 

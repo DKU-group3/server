@@ -18,7 +18,9 @@ import static lombok.AccessLevel.*;
 @Entity
 @Getter
 @Table(name = "review")
+@Builder
 @NoArgsConstructor(access = PROTECTED)
+@AllArgsConstructor(access = PROTECTED)
 public class Review extends BaseEntity {
 
     @Id @GeneratedValue(strategy = IDENTITY)
@@ -26,6 +28,7 @@ public class Review extends BaseEntity {
 
     private Double rating;
 
+    @Column(nullable = false, length = 2000)
     private String content;
 
     @OneToMany(mappedBy = "review", orphanRemoval = true, cascade = CascadeType.ALL)
@@ -35,4 +38,12 @@ public class Review extends BaseEntity {
     @JoinColumn(name = "place_id", nullable = false, updatable = false)
     private Place place;
 
+    public static Review create(Place place, Double rating, String content) {
+        return Review.builder()
+                .rating(rating)
+                .content(content)
+                .images(new ArrayList<>())
+                .place(place)
+                .build();
+    }
 }
