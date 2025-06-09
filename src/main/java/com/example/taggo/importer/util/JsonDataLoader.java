@@ -13,7 +13,6 @@ import java.util.Arrays;
 import java.util.List;
 
 @Component
-@Profile("import")
 @RequiredArgsConstructor
 public class JsonDataLoader implements CommandLineRunner {
 
@@ -21,8 +20,9 @@ public class JsonDataLoader implements CommandLineRunner {
     private final DataImportService dataImportService;
 
     @Override
+    @Profile("import")
     public void run(String... args) throws Exception {
-        File file = new File("src/main/resources/data/sinsa_restaurants_reviews_final_tags_cleaned.json");
+        File file = new File("data/sinsa_restaurants_reviews_final_tags.json");
         List<PlaceImportRequest> places = Arrays.asList(
                 objectMapper.readValue(file, PlaceImportRequest[].class)
         );
